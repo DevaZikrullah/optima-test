@@ -4,7 +4,7 @@
 
     <head>
 
-        <title>Laravel 9 CRUD Application - ItSolutionStuff.com</title>
+        <title>Optima test</title>
 
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
