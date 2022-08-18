@@ -14,9 +14,10 @@ class EmployeesController extends Controller
      */
     public function index()
     {
-        $allEmployees = Employees::paginate(10);
+        $companies = Employees::paginate(10);
 
-        return $allEmployees;
+        return view('employees.index',compact('employees'))
+        ->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
     /**
@@ -26,7 +27,7 @@ class EmployeesController extends Controller
      */
     public function create()
     {
-        //
+        return view('employees.create');
     }
 
     /**
@@ -37,18 +38,35 @@ class EmployeesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'first_name' => 'required',
+            'last_name'=> 'required',
+            'companies_id',
+            'email',
+            'phone'
+        ]);
+        $data = $request->only(
+            'first_name',
+            'last_name',
+            'companies_id',
+            'email',
+            'phone'
+        );
+       
+        Employees::create($data);
+        return redirect()->route('employees.index')
+        ->with('success','Employees created successfully.');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  Employees  $employees
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Employees $employees)
     {
-        //
+        return view('employees.show',compact('employee'));
     }
 
     /**
@@ -59,7 +77,7 @@ class EmployeesController extends Controller
      */
     public function edit($id)
     {
-        //
+        return view('employees.edit',compact('employees'));
     }
 
     /**

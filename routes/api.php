@@ -21,10 +21,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-// Route::get('/companies', [
-//     CompaniesController::class, 'index'
-// ]);
+Route::get('/companies', [
+    CompaniesController::class, 'index'
+]);
 
 Route::get('/employees', [
     EmployeesController::class, 'index'
+]);
+
+Route::post('companies_create',[
+    CompaniesController::class, 'store'
 ]);

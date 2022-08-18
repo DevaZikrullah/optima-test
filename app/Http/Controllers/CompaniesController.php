@@ -38,15 +38,28 @@ class CompaniesController extends Controller
      */
     public function store(Request $request)
     {
+        
         $request->validate([
             'name' => 'required',
-            'logo',
+            'logo'=> 'nullable',
             'email',
             'website'
         ]);
-        Companies::create($request->all());
+        $data = $request->only(
+            'name',
+            'logo',
+            'email',
+            'website'
+        );
+        if($files = $data['logo']){
+            $filename = $files->getClientOriginalName();
+            $data['logo'] = $filename;
+            $files->store('public');
+        }
+        // dd($request->all());
+        Companies::create($data);
         return redirect()->route('companies.index')
-        ->with('success','Product created successfully.');
+        ->with('success','Companies created successfully.');
     }
 
     /**
@@ -55,7 +68,7 @@ class CompaniesController extends Controller
      * @param  Companies  $companies
      * @return \Illuminate\Http\Response
      */
-    public function show(Companies $companies)
+    public function show(Companies $companie)
     {
         return view('companies.show',compact('companie'));
     }
@@ -63,10 +76,10 @@ class CompaniesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  Companies  $companies
+     * @param  int  $companies
      * @return \Illuminate\Http\Response
      */
-    public function edit(Companies $companies)
+    public function edit($companie)
     {
         return view('companies.edit',compact('companie'));
     }
@@ -75,17 +88,30 @@ class CompaniesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  Companies  $companies
+     * @param    $companie
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Companies $companies)
+    public function update(Request $request, $companie)
     {
         $request->validate([
             'name' => 'required',
-            'detail' => 'required',
+            'logo'=> 'nullable',
+            'email',
+            'website'
         ]);
+        $data = $request->only(
+            'name',
+            'logo',
+            'email',
+            'website'
+        );
+        if($files = $data['logo']){
+            $filename = $files->getClientOriginalName();
+            $data['logo'] = $filename;
+            $files->store('public');
+        }
 
-        $companies->update($request->all());
+        $companie->update($data);
 
         return redirect()->route('companies.index')
         ->with('success','Companies updated successfully');
@@ -94,13 +120,14 @@ class CompaniesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  Companies  $companies
+     * @param  $companie
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Companies $companies)
+    public function destroy($companie)
     {
-        $companies->delete();
+        $companie->delete();
+        
         return redirect()->route('companies.index')
-        ->with('success','Product deleted successfully');
+        ->with('success','Companie deleted successfully');
     }
 }
