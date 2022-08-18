@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Companies;
 use App\Models\Employees;
 use Illuminate\Http\Request;
 
@@ -54,6 +55,13 @@ class EmployeesController extends Controller
             'email',
             'phone'
         );
+        $count = Companies::count();
+        // dd($count);
+
+        if($data > $count){
+            return 'not find id companies';
+        }
+
        
         Employees::create($data);
         return redirect()->route('employees.index')
@@ -112,6 +120,11 @@ class EmployeesController extends Controller
         $employees->email = $request->email;
         $employees->phone = $request->phone;
 
+        $count = Companies::count();
+        if($employees->companies_id > $count){
+            return 'not find id companies';
+        }
+
         $employees->save();
 
         return response()->json(['emplooyees updated successfully.',$employees]);
@@ -123,9 +136,9 @@ class EmployeesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Employees $employees)
+    public function destroy($id)
     {
-        $employees->delete();
+        Employees::find($id)->delete();
         
         return response()->json('employees deleted successfully');
     }

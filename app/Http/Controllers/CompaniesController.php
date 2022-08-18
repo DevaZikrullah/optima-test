@@ -133,9 +133,9 @@ class CompaniesController extends Controller
      * @param  $companie
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Companies $companie)
+    public function destroy($id)
     {
-        $companie->delete();
+        Companies::find($id)->delete();
         
         return response()->json('Companies deleted successfully');
     }
