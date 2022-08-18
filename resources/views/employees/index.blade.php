@@ -1,4 +1,4 @@
-@extends('companies.layout')
+@extends('employees.layout')
 
 @section('content')
     <div class="row">
@@ -7,7 +7,7 @@
                 <h2>companies</h2>
             </div>
             <div class="pull-right">
-                <a class="btn btn-success" href="{{ route('companies.create') }}"> Create New Companies</a>
+                <a class="btn btn-success" href="{{ route('employees.create') }}"> Create New Companies</a>
             </div>
         </div>
     </div>
@@ -21,32 +21,35 @@
     <table class="table table-bordered">
         <tr>
             <th>No</th>
-            <th>Name</th>
-            <th>Logo</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Companies Id</th>
             <th>Email</th>
-            <th>website</th>
+            <th>phone</th>
             <th width="280px">Action</th>
         </tr>
 
-        @foreach ($companies as $companie)
+        @foreach ($employees as $employee)
 
         <tr>
 
             <td>{{ ++$i }}</td>
 
-            <td>{{ $companie->name }}</td>
+            <td>{{ $employee->first_name }}</td>
 
-            <td>{{ $companie->logo }}</td>
+            <td>{{ $employee->last_name }}</td>
 
-            <td>{{ $companie->email }}</td>
+            <td>{{ $employee->companies_id }}</td>
 
-            <td>{{ $companie->website }}</td>
+            <td>{{ $employee->email }}</td>
+
+            <td>{{ $employee->phone }}</td>
 
 
             <td>
-                <form action="{{ route('companies.destroy',$companie->id) }}" method="POST">
-                    <a class="btn btn-info" href="{{ route('companies.show',$companie->id) }}">Show</a>
-                    <a class="btn btn-primary" href="{{ route('companies.edit',$companie->id) }}">Edit</a>
+                <form action="{ route('employees.destroy',$employee->id) }}" method="POST">
+                    <a class="btn btn-info" href="{{ route('employees.show',$employee->id) }}">Show</a>
+                    <a class="btn btn-primary" href="{{ route('employees.edit',$employee->id) }}">Edit</a>
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">Delete</button>
@@ -55,5 +58,5 @@
         </tr>
         @endforeach
     </table>
-   {!! $companies->links() !!}
+   {!! $employees->links() !!}
 @endsection

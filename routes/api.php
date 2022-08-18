@@ -25,10 +25,38 @@ Route::get('/companies', [
     CompaniesController::class, 'index'
 ]);
 
-Route::get('/employees', [
-    EmployeesController::class, 'index'
+Route::get('/companies/{id}', [
+    CompaniesController::class, 'show'
+]);
+
+Route::post('/companies_update/{id}', [
+    CompaniesController::class, 'update'
+]);
+
+Route::delete('/companies/{id}', [
+    CompaniesController::class, 'destroy'
 ]);
 
 Route::post('companies_create',[
     CompaniesController::class, 'store'
+]);
+
+Route::get('/employees', [
+    EmployeesController::class, 'index'
+]);
+
+Route::get('/employees/{id}', [
+    EmployeesController::class, 'show'
+]);
+
+Route::post('/employees_update/{id}', [
+    EmployeesController::class, 'update'
+]);
+
+Route::delete('/employees/{id}', [
+    EmployeesController::class, 'destroy'
+]);
+
+Route::post('employees_create',[
+    EmployeesController::class, 'store'
 ]);

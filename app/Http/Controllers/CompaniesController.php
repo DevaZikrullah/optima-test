@@ -14,10 +14,13 @@ class CompaniesController extends Controller
      */
     public function index()
     {
-        $companies = Companies::paginate(10);
+        $companies = Companies::with('employees')->paginate(10);
 
-        return view('companies.index',compact('companies'))
-        ->with('i', (request()->input('page', 1) - 1) * 10);
+        return response()->json(["success" => true,
+        "message" => "companie retrieved successfully.",
+        "data" => $companies
+        ]);
+        
     }
 
     /**
@@ -57,26 +60,35 @@ class CompaniesController extends Controller
             $files->store('public');
         }
         // dd($request->all());
-        Companies::create($data);
-        return redirect()->route('companies.index')
-        ->with('success','Companies created successfully.');
+        $companie = Companies::create($data);
+        return response()->json(["success" => true,
+        "message" => "companie create successfully.",
+        "data" => $companie
+        ]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  Companies  $companies
+     * @param   $companies
      * @return \Illuminate\Http\Response
      */
-    public function show(Companies $companie)
+    public function show($id)
     {
-        return view('companies.show',compact('companie'));
+        $companie = Companies::find($id);
+        if (is_null($companie)) {
+            return $this->sendError('companie not found.');
+        }
+        return response()->json(["success" => true,
+        "message" => "companie retrieved successfully.",
+        "data" => $companie
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $companies
+     * @param    $companies
      * @return \Illuminate\Http\Response
      */
     public function edit($companie)
@@ -88,10 +100,10 @@ class CompaniesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param    $companie
+     * @param    $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $companie)
+    public function update(Request $request, Companies $companie)
     {
         $request->validate([
             'name' => 'required',
@@ -99,22 +111,20 @@ class CompaniesController extends Controller
             'email',
             'website'
         ]);
-        $data = $request->only(
-            'name',
-            'logo',
-            'email',
-            'website'
-        );
-        if($files = $data['logo']){
+        
+        $companie->name = $request->name;
+        $companie->logo = $request->logo;
+        $companie->email = $request->email;
+        $companie->website = $request->website;
+        if($files = $companie->logo){
             $filename = $files->getClientOriginalName();
             $data['logo'] = $filename;
             $files->store('public');
         }
 
-        $companie->update($data);
+        $companie->save();
 
-        return redirect()->route('companies.index')
-        ->with('success','Companies updated successfully');
+        return response()->json(['companies updated successfully.',$companie]);
     }
 
     /**
@@ -123,11 +133,10 @@ class CompaniesController extends Controller
      * @param  $companie
      * @return \Illuminate\Http\Response
      */
-    public function destroy($companie)
+    public function destroy(Companies $companie)
     {
         $companie->delete();
         
-        return redirect()->route('companies.index')
-        ->with('success','Companie deleted successfully');
+        return response()->json('Companies deleted successfully');
     }
 }

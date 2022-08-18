@@ -14,10 +14,12 @@ class EmployeesController extends Controller
      */
     public function index()
     {
-        $companies = Employees::paginate(10);
+        $employees = Employees::paginate(10);
 
-        return view('employees.index',compact('employees'))
-        ->with('i', (request()->input('page', 1) - 1) * 10);
+        return response()->json(["success" => true,
+        "message" => "employees retrieved successfully.",
+        "data" => $employees
+        ]);
     }
 
     /**
@@ -61,12 +63,19 @@ class EmployeesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  Employees  $employees
+     * @param  
      * @return \Illuminate\Http\Response
      */
-    public function show(Employees $employees)
+    public function show($id)
     {
-        return view('employees.show',compact('employee'));
+        $employees = Employees::find($id);
+        if (is_null($employees)) {
+            return $this->sendError('employees not found.');
+        }
+        return response()->json(["success" => true,
+        "message" => "employees retrieved successfully.",
+        "data" => $employees
+        ]);
     }
 
     /**
@@ -87,9 +96,25 @@ class EmployeesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Employees $employees)
     {
-        //
+        $request->validate([
+            'first_name'=>'required',
+            'last_name'=>'required',
+            'companies_id',
+            'email',
+            'phone'
+        ]);
+        
+        $employees->first_name = $request->first_name;
+        $employees->last_name = $request->last_name;
+        $employees->companies_id = $request->companies_id;
+        $employees->email = $request->email;
+        $employees->phone = $request->phone;
+
+        $employees->save();
+
+        return response()->json(['emplooyees updated successfully.',$employees]);
     }
 
     /**
@@ -98,8 +123,10 @@ class EmployeesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Employees $employees)
     {
-        //
+        $employees->delete();
+        
+        return response()->json('employees deleted successfully');
     }
 }

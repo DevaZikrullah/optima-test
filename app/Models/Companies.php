@@ -15,4 +15,8 @@ class Companies extends Model
         'email',
         'website',
     ];
+
+    public function employees(){
+        return $this->hasMany(Employees::class);
+    }
 }
